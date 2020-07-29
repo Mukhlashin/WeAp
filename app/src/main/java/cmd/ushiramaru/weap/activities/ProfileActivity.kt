@@ -1,14 +1,17 @@
 package cmd.ushiramaru.weap.activities
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import cmd.ushiramaru.weap.R
 import cmd.ushiramaru.weap.utils.Constants.DATA_IMAGES
 import cmd.ushiramaru.weap.utils.Constants.DATA_USERS
@@ -23,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_profile.*
+
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -68,11 +72,9 @@ class ProfileActivity : AppCompatActivity() {
         progress_layout.visibility = View.VISIBLE
         firebaseDb.collection(DATA_USERS)
             .document(userId!!)
-            .get()                              // membaca data table user
+            .get()
             .addOnSuccessListener {
-                // jika proses berhasil, data akan ditampung lalu
                 val user = it.toObject(User::class.java)
-                // data dipasang ke EditText
                 edt_name_profile.setText(user?.name, TextView.BufferType.EDITABLE)
                 edt_email_profile.setText(user?.email, TextView.BufferType.EDITABLE)
                 edt_phone_profile.setText(user?.phone, TextView.BufferType.EDITABLE)
@@ -127,18 +129,43 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun onDelete() {
         progress_layout.visibility = View.VISIBLE
+        val input = EditText(this@ProfileActivity)
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT)
+        input.layoutParams = lp
         AlertDialog.Builder(this)                                                             // ketika tombol DELETE diklik, AlertDialog akan muncul
             .setTitle("Delete Account")                                                              // Title AlertDialog
-            .setMessage("This will delete your Profile Information. Are you sure?")                  // pesan info
-            .setPositiveButton("Yes") { dialog, which ->
-                // button Yes
-                firebaseDb.collection(DATA_USERS).document(userId!!)
-                    .delete()                                // perintah delete
-                progress_layout.visibility = View.GONE
-                Toast.makeText(this, "Profile deleted", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .setNegativeButton("No") { dialog, which ->
+            .setMessage("This will delete your Profile Information. Are you sure?")
+            .setView(input)
+            .setPositiveButton("Yes") { dialog, which->
+                DialogInterface.OnClickListener { dialog, which ->
+                    firebaseDb.collection(DATA_USERS)
+                        .document(userId!!)
+                        .get()
+                        .addOnSuccessListener {
+                            val user = it.toObject(User::class.java)
+                            val password = user?.password
+                            if (password!!.compareTo(password) == 0) {
+                                if (input.equals(password)) {
+                                    Toast.makeText(applicationContext,
+                                        "Password Matched", Toast.LENGTH_SHORT).show();
+                                    firebaseDb.collection(DATA_USERS).document(userId!!).delete()                                // perintah delete
+                                    Toast.makeText(this, "Profile deleted", Toast.LENGTH_SHORT).show()
+                                    startActivityForResult(Intent(this, LoginActivity::class.java), 0)
+                                    finish()
+                                } else {
+                                    Toast.makeText(this, "Wrong Password!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            progress_layout.visibility = View.GONE
+                        }
+                        .addOnFailureListener { e ->
+                            e.printStackTrace()
+                            finish()
+                        }
+                }
+            }.setNegativeButton("No") { dialog, which ->
                 progress_layout.visibility = View.GONE
             }
             .setCancelable(false)                                                                           // AlertDialog tidak dapat hilang kecuali menekan buton Yes/No
