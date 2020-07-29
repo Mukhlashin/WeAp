@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1066989465123",
+    "firebase_url": "https://realtimechat-ad870.firebaseio.com",
+    "project_id": "realtimechat-ad870",
+    "storage_bucket": "realtimechat-ad870.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066989465123:android:cea19da8d9ddf033120b96",
+        "android_client_info": {
+          "package_name": "cmd.ushiramaru.weap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1066989465123-73m4gq3v2t4e4qm3nua1pc3em7ii622d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCugldNLJtbQxHxnX8-wQnqgTyyihztXvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1066989465123-73m4gq3v2t4e4qm3nua1pc3em7ii622d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
