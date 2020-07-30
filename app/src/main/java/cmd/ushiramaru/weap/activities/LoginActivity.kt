@@ -53,12 +53,15 @@ class LoginActivity : AppCompatActivity() {
     private fun setTextChangedListener(edt: EditText, til: TextInputLayout) {
         edt.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-        }
+
+            }
             override fun beforeTextChanged(s: CharSequence? , start: Int, count: Int, after: Int) {
+
             }
             // ketika editText diubah memastikan TextInputLayout tidak menunjukkan pesan error
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                til.isErrorEnabled = false }
+                til.isErrorEnabled = false
+            }
         })
     }
 

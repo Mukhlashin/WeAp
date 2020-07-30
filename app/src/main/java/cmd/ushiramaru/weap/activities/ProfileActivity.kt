@@ -1,10 +1,14 @@
 package cmd.ushiramaru.weap.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -25,7 +29,13 @@ import cmd.ushiramaru.weap.utils.populateImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_profile.*
+import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -35,15 +45,23 @@ class ProfileActivity : AppCompatActivity() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firebaseStorage = FirebaseStorage.getInstance().reference               // mengakses firebase
     private var imageUrl: String? = null
+    private var nama : String = ""
+    private var email : String = ""
+    private var phone : String = ""
+
+    lateinit var file: File
+
+    private val RC_CAMERA = 1
+    val REQUEST_TAKE_PHOTO = 1
+    val REQUEST_CHOOSE_PHOTO = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
         imbtn_profile.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, REQUEST_CODE_PHOTO)
+            checkCameraPermission()
+            cropImageAutoSelection()
 
             if (userId.isNullOrEmpty()) {
                 finish()                    // jika userId null, ProfileActivity akan dihentikan finish() dan kembali ke MainActivity
@@ -61,13 +79,6 @@ class ProfileActivity : AppCompatActivity() {
         populateInfo()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_PHOTO) {
-            storeImage(data?.data)                                                                          // method storeImage dijalankan setelah pengguna memilih gambar }
-        }
-    }
-
     private fun populateInfo() {
         progress_layout.visibility = View.VISIBLE
         firebaseDb.collection(DATA_USERS)
@@ -78,6 +89,9 @@ class ProfileActivity : AppCompatActivity() {
                 edt_name_profile.setText(user?.name, TextView.BufferType.EDITABLE)
                 edt_email_profile.setText(user?.email, TextView.BufferType.EDITABLE)
                 edt_phone_profile.setText(user?.phone, TextView.BufferType.EDITABLE)
+                nama = user?.name.toString()
+                email = user?.email.toString()
+                phone = user?.phone.toString()
                 progress_layout.visibility = View.GONE
             }
             .addOnFailureListener { e ->
@@ -86,7 +100,7 @@ class ProfileActivity : AppCompatActivity() {
             }
     }
 
-    fun onApply() {
+    private fun onApply() {
         progress_layout.visibility = View.VISIBLE
         val name = edt_name_profile.text.toString()
         val email = edt_email_profile.text.toString()
@@ -97,34 +111,21 @@ class ProfileActivity : AppCompatActivity() {
         map[DATA_USER_EMAIL] = email
         map[DATA_USER_PHONE] = phone
 
-        firebaseDb.collection(DATA_USERS).document(userId!!).update(map) // perintah update
-            .addOnSuccessListener {
-                Toast.makeText(this, "Update Successful", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { e ->
-                e.printStackTrace()
-                Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show()
-                progress_layout.visibility = View.GONE
-            }
-
-        firebaseDb.collection(DATA_USERS)
-            .document(userId!!)
-            .update(map)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Update Successful", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { e ->
-                e.printStackTrace()
-                Toast.makeText(
-                    this,
-                    "Update Failed",
-                    Toast.LENGTH_SHORT
-                ).show()
-                progress_layout.visibility = View.GONE
-            }
-
+        if (nama.equals(name) && email.equals(email) && phone.equals(phone)) {
+            Toast.makeText(this, "Belum ada data yang diubah", Toast.LENGTH_SHORT).show()
+            progress_layout.visibility = View.GONE
+        } else {
+            firebaseDb.collection(DATA_USERS).document(userId!!).update(map) // perintah update
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Update Successful", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    e.printStackTrace()
+                    Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show()
+                    progress_layout.visibility = View.GONE
+                }
+        }
     }
 
     private fun onDelete() {
@@ -192,4 +193,75 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
         }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            var extras: Bundle? = data?.extras
+            var bitmap: Bitmap = extras?.get("data") as Bitmap
+
+            var filesDir: File = applicationContext.filesDir
+            var imageFile = File(filesDir, "image" + ".jpg")
+
+            var os: OutputStream
+            try {
+                os = FileOutputStream(imageFile)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                os.flush()
+                os.close()
+                file = imageFile
+                img_profile?.setImageBitmap(bitmap)
+            } catch (e: Exception) {
+                Log.e(javaClass.simpleName, "Error writing bitmap", e)
+            }
+        } else if (requestCode == REQUEST_CHOOSE_PHOTO && resultCode == Activity.RESULT_OK) {
+            var uri: Uri? = data?.data
+
+            CropImage.activity(uri).setAspectRatio(1, 1).start(this)
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            var result: CropImage.ActivityResult = CropImage.getActivityResult(data)
+            if (resultCode == Activity.RESULT_OK) {
+                var imageUri: Uri = result.uri
+                try {
+                    var bitmap: Bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+
+                    var filesDir: File = this.filesDir!!
+                    var imageFile = File(filesDir, "image" + ".jpg")
+
+                    var os: OutputStream = FileOutputStream(imageFile)
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+                    os.flush()
+                    os.close()
+                    file = imageFile
+                    if (bitmap != null) {
+                        img_profile?.setImageBitmap(bitmap)
+                    }
+                } catch (e: IOException) {
+                    Log.e(javaClass.simpleName, "Error writing bitmap", e)
+                    e.printStackTrace()
+                }
+            }
+        }
+        storeImage(data?.data)
+    }
+
+    private fun checkCameraPermission() {
+        var perm: String = Manifest.permission.CAMERA
+        if (this.let { EasyPermissions.hasPermissions(it, perm) }!!) {
+        } else {
+            EasyPermissions.requestPermissions(this, "Butuh permission camera", RC_CAMERA, perm)
+        }
+    }
+
+    private fun cropImageAutoSelection() {
+        this.let {
+            CropImage.activity()
+                .setAspectRatio(2, 2)
+                .start(this)
+        }
+    }
+
     }
