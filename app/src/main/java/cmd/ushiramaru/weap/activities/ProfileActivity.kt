@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.form_data.*
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.io.FileOutputStream
@@ -43,13 +44,13 @@ class ProfileActivity : AppCompatActivity() {
     private val firebaseDb = FirebaseFirestore.getInstance()
     private val userId = FirebaseAuth.getInstance().currentUser?.uid
     private val firebaseAuth = FirebaseAuth.getInstance()
-    private val firebaseStorage = FirebaseStorage.getInstance().reference               // mengakses firebase
+    private val firebaseStorage = FirebaseStorage.getInstance().reference
     private var imageUrl: String? = null
     private var nama : String = ""
     private var email : String = ""
     private var phone : String = ""
 
-    lateinit var file: File
+    var file: File? = null
 
     private val RC_CAMERA = 1
     val REQUEST_TAKE_PHOTO = 1
@@ -101,6 +102,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun onApply() {
+        uploadImage()
         progress_layout.visibility = View.VISIBLE
         val name = edt_name_profile.text.toString()
         val email = edt_email_profile.text.toString()
@@ -115,62 +117,61 @@ class ProfileActivity : AppCompatActivity() {
             Toast.makeText(this, "Belum ada data yang diubah", Toast.LENGTH_SHORT).show()
             progress_layout.visibility = View.GONE
         } else {
-            firebaseDb.collection(DATA_USERS).document(userId!!).update(map) // perintah update
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Update Successful", Toast.LENGTH_SHORT).show()
-                    finish()
-                }
-                .addOnFailureListener { e ->
-                    e.printStackTrace()
-                    Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show()
-                    progress_layout.visibility = View.GONE
-                }
+            if (file == null) {
+                Toast.makeText(this, "Belum ada data gambar", Toast.LENGTH_SHORT).show()
+                progress_layout.visibility = View.GONE
+            } else {
+                firebaseDb.collection(DATA_USERS).document(userId!!).update(map) // perintah update
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Update Successful", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        e.printStackTrace()
+                        Toast.makeText(this, "Update Failed", Toast.LENGTH_SHORT).show()
+                        progress_layout.visibility = View.GONE
+                    }
+            }
+        }
+    }
+
+    private fun uploadImage() {
+        if (file == null) {
+            Toast.makeText(this, "Masih belum ada image", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun onDelete() {
-        progress_layout.visibility = View.VISIBLE
-        val input = EditText(this@ProfileActivity)
-        val lp = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT)
-        input.layoutParams = lp
-        AlertDialog.Builder(this)                                                             // ketika tombol DELETE diklik, AlertDialog akan muncul
-            .setTitle("Delete Account")                                                              // Title AlertDialog
-            .setMessage("This will delete your Profile Information. Are you sure?")
-            .setView(input)
-            .setPositiveButton("Yes") { dialog, which->
-                DialogInterface.OnClickListener { dialog, which ->
-                    firebaseDb.collection(DATA_USERS)
-                        .document(userId!!)
-                        .get()
-                        .addOnSuccessListener {
-                            val user = it.toObject(User::class.java)
-                            val password = user?.password
-                            if (password!!.compareTo(password) == 0) {
-                                if (input.equals(password)) {
-                                    Toast.makeText(applicationContext,
-                                        "Password Matched", Toast.LENGTH_SHORT).show();
-                                    firebaseDb.collection(DATA_USERS).document(userId!!).delete()                                // perintah delete
-                                    Toast.makeText(this, "Profile deleted", Toast.LENGTH_SHORT).show()
-                                    startActivityForResult(Intent(this, LoginActivity::class.java), 0)
-                                    finish()
-                                } else {
-                                    Toast.makeText(this, "Wrong Password!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            progress_layout.visibility = View.GONE
-                        }
-                        .addOnFailureListener { e ->
-                            e.printStackTrace()
-                            finish()
-                        }
+        var dialog =  AlertDialog.Builder(this)
+        var inflater = layoutInflater
+        var dialogView = inflater.inflate(R.layout.form_data, null)
+        dialog.setView(dialogView)
+        dialog.setTitle("Hapus akun?")
+        dialog.setPositiveButton("Yes") { dialog, which ->
+            var edtPassword : EditText = dialogView.findViewById(R.id.edt_password)
+            var password = edtPassword.text.toString()
+            firebaseDb.collection(DATA_USERS)
+                .document(userId!!)
+                .get()
+                .addOnSuccessListener {
+                    val user = it.toObject(User::class.java)
+                    var pass = user?.password.toString()
+                    if (password.equals(pass)) {
+                        firebaseDb.collection(DATA_USERS).document(userId!!).delete()
+                        Toast.makeText(applicationContext, "Profile deleted", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(applicationContext, LoginActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(applicationContext, "Password salah", Toast.LENGTH_SHORT).show()
+                        progress_layout.visibility = View.GONE
+                    }
                 }
-            }.setNegativeButton("No") { dialog, which ->
+        }
+            dialog.setNegativeButton("No") { dialog, which ->
                 progress_layout.visibility = View.GONE
             }
-            .setCancelable(false)                                                                           // AlertDialog tidak dapat hilang kecuali menekan buton Yes/No
-            .show()                                                                                         // memunculkan AlertDialog }
+        dialog.show()
+        dialog.setCancelable(false)
     }
 
     private fun storeImage(uri: Uri?) {
