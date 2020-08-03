@@ -1,14 +1,22 @@
 package cmd.ushiramaru.weap.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.Fragment
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import cmd.ushiramaru.weap.R
 import cmd.ushiramaru.weap.adapters.SectionPagerAdapter
 import cmd.ushiramaru.weap.fragments.ChatsFragment
+import cmd.ushiramaru.weap.utils.Constants.PERMISSION_REQUEST_READ_CONTACT
+import cmd.ushiramaru.weap.utils.Constants.REQUEST_NEW_CHATS
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,7 +24,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 
 class MainActivity : AppCompatActivity() {
-
     // Deklarasikan pada MainActivity
     private val firebaseDb = FirebaseFirestore.getInstance()
     private val firebaseAuth = FirebaseAuth.getInstance()
@@ -68,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         fab.setOnClickListener {
-//            onNewChat()
+            onNewChat()
         }
     }
 
@@ -77,9 +84,25 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode){
+            PERMISSION_REQUEST_READ_CONTACT -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    startNewActivity()
+                }
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when (item.itemId){
+        when (item.itemId) {
             R.id.action_logout -> onLogout()
             R.id.action_profile -> onProfile()
         }
@@ -99,22 +122,66 @@ class MainActivity : AppCompatActivity() {
 
     class PlaceHolderFragment : Fragment() {
         companion object {
-        private val ARG_SECTION_NUMBER = "Section number"
-        fun newIntent(sectionNumber: Int): PlaceHolderFragment {
-            val fragment = PlaceHolderFragment()
-            val args = Bundle()
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-            fragment.arguments = args
-            return fragment
+            private val ARG_SECTION_NUMBER = "Section number"
+            fun newIntent(sectionNumber: Int): PlaceHolderFragment {
+                val fragment = PlaceHolderFragment()
+                val args = Bundle()
+                args.putInt(ARG_SECTION_NUMBER, sectionNumber)
+                fragment.arguments = args
+                return fragment
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
+        override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        ): View? {
+            val rootView = inflater.inflate(R.layout.fragment_main, container, false)
+            rootView.section_label.text =
+                "Hello world, from section ${arguments?.getInt(ARG_SECTION_NUMBER)}"
+            return rootView
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle? ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_main, container, false)
-        rootView.section_label.text = "Hello world, from section ${arguments?.getInt(ARG_SECTION_NUMBER)}"
-        return rootView
+    private fun onNewChat() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.READ_CONTACTS
+                )
+            ) {
+                AlertDialog.Builder(this)
+                    .setTitle("Contacts Permission")
+                    .setMessage("This App Requires Access to Your Contacts to Initialize A Conversation")
+                    .setPositiveButton("Yes") { _, _ ->
+                        requestContactPermission()
+                    }
+                    .setNegativeButton("No") { _, _ -> }
+                    .show()
+            } else {
+                requestContactPermission()
+            }
+        } else {
+            startNewActivity()
         }
+    }
+
+    private fun startNewActivity() {
+        startActivityForResult(Intent(this, ContactActivity::class.java), REQUEST_NEW_CHATS)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK){
+            when (requestCode){
+                REQUEST_NEW_CHATS -> {}
+            }
+        }
+    }
+
+    private fun requestContactPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS), PERMISSION_REQUEST_READ_CONTACT)
     }
 }

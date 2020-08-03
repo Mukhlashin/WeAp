@@ -49,14 +49,14 @@
 
                 <ImageButton
                     android:id="@+id/imbtn_profile"
+                    style="@style/StandardImageButton"
                     android:layout_width="@dimen/dp50"
                     android:layout_height="@dimen/dp50"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    style="@style/StandardImageButton"
-                    app:srcCompat="@drawable/ic_camera"
                     android:layout_alignParentRight="true"
-                    android:contentDescription="@string/image_button" />
+                    android:layout_alignParentBottom="true"
+                    android:contentDescription="@string/image_button"
+                    app:srcCompat="@drawable/ic_camera" />
             </RelativeLayout>
             <!--endregion-->
 
@@ -75,6 +75,7 @@
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email_profile"
                 style="@style/StandardTextInput"
@@ -89,6 +90,7 @@
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_phone_profile"
                 style="@style/StandardTextInput"

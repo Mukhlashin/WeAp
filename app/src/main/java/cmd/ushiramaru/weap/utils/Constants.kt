@@ -10,5 +10,7 @@ object Constants {
     val DATA_USER_STATUS_URL = "statusUrl"
     val DATA_USER_STATUS_TIME = "statusTime"
     val REQUEST_CODE_PHOTO = 1924
-    val DATA_IMAGES = "image"               // acuan mengakses table image di dalam table user
+    val DATA_IMAGES = "image"
+    val PERMISSION_REQUEST_READ_CONTACT = 1923
+    val REQUEST_NEW_CHATS = 1922
 }

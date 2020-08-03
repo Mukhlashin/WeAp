@@ -46,13 +46,13 @@
 
     <ImageButton
         android:id="@+id/imbtn_send"
+        style="@style/StandardImageButton"
         android:layout_width="@dimen/dp50"
         android:layout_height="@dimen/dp50"
         android:layout_marginEnd="@dimen/dp4"
         android:layout_marginRight="@dimen/dp4"
         android:layout_marginBottom="@dimen/dp4"
-        style="@style/StandardImageButton"
-        android:src="@drawable/ic_send"
+        app:srcCompat="@drawable/ic_send"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -10,3 +10,8 @@ data class User(
     val statusUrl: String? = "",
     val statusTime: String? = ""
 )
+
+data class Contact
+    ( val name: String?,
+      val phone: String?
+)
