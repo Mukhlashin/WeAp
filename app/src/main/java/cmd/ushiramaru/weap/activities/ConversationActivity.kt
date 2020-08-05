@@ -12,7 +12,9 @@ import cmd.ushiramaru.weap.adapters.ConversationAdapter
 import cmd.ushiramaru.weap.utils.Constants.DATA_CHATS
 import cmd.ushiramaru.weap.utils.Constants.DATA_CHAT_MESSAGE
 import cmd.ushiramaru.weap.utils.Constants.DATA_CHAT_MESSAGE_TIME
+import cmd.ushiramaru.weap.utils.Constants.DATA_USERS
 import cmd.ushiramaru.weap.utils.Message
+import cmd.ushiramaru.weap.utils.User
 import cmd.ushiramaru.weap.utils.populateImage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
@@ -61,6 +63,15 @@ class ConversationActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar_conversation.setNavigationOnClickListener { onBackPressed() }
 
+        firebaseDb.collection(DATA_USERS).document(userId!!).get()
+            .addOnSuccessListener {
+                val user = it.toObject(User::class.java)
+                phone = user?.phone
+            }
+            .addOnFailureListener { e ->
+                e.printStackTrace()
+                finish()
+            }
 
         chatId = intent.extras?.getString(PARAM_CHAT_ID)
         imageUrl = intent.extras?.getString(PARAM_IMAGE_URL)
@@ -121,15 +132,6 @@ class ConversationActivity : AppCompatActivity() {
                     setHasFixedSize(false)
                     layoutManager = LinearLayoutManager(context)
                     adapter = conversationAdapter
-                }
-
-                conversationAdapter.addMessage(
-                    Message(userId, "Hello", 2)
-                )
-                conversationAdapter.addMessage(Message("everytime", "How are you?", 3))
-                conversationAdapter.addMessage(Message(userId, "I'm good, how are you?", 4))
-                conversationAdapter.addMessage(Message("everytime", "Me too", 5))
-                btn_send.setOnClickListener {
                 }
             }
     }
