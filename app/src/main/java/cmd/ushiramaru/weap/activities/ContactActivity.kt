@@ -33,17 +33,10 @@ class ContactActivity : AppCompatActivity(), ContactsClickListener {
         while (phone!!.moveToNext()){
             val name = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             val phoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            newList.add(Contact(name, phoneNumber))
         }
         contactsList.addAll(newList)
         phone.close()
-    }
-
-    override fun onContactClicked(name: String?, phone: String?) {
-        val intent = Intent()
-        intent.putExtra(MainActivity.PARAM_NAME, name)
-        intent.putExtra(MainActivity.PARAM_PHONE, phone)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
     }
 
     private fun setupList() {
@@ -57,4 +50,12 @@ class ContactActivity : AppCompatActivity(), ContactsClickListener {
         addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 }
+
+    override fun onContactClicked(name: String?, phone: String?) {
+        val intent = Intent()
+        intent.putExtra(MainActivity.PARAM_NAME, name)
+        intent.putExtra(MainActivity.PARAM_PHONE, phone)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
 }
