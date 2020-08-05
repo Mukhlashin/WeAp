@@ -1,5 +1,6 @@
 package cmd.ushiramaru.weap.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import cmd.ushiramaru.weap.R
+import cmd.ushiramaru.weap.activities.ConversationActivity
 import cmd.ushiramaru.weap.adapters.ChatsAdapter
 import cmd.ushiramaru.weap.listeners.ChatClickListener
 import cmd.ushiramaru.weap.listeners.FailureCallback
@@ -67,12 +69,14 @@ class ChatsFragment : Fragment(), ChatClickListener {
 
 
     override fun onChatClicked(
-        name: String?,
+        chatId: String?,
         otherUserId: String?,
         chatsImageUrl: String?,
         chatsName: String?
     ) {
-        Toast.makeText(context, "$name clicked", Toast.LENGTH_SHORT).show()
+        startActivity(
+            ConversationActivity.newIntent(context, chatId, chatsImageUrl, otherUserId, chatsName)
+        )
     }
 
     fun newChat(partnerId: String) {
