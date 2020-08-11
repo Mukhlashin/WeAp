@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="cmd.ushiramaru.weap">
+    package="idn.project_whatsapp.whatsapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
@@ -17,23 +17,23 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".activities.StatusActivity"
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.StatusActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".activities.ConversationActivity" />
-        <activity android:name=".activities.ContactActivity" />
-        <activity android:name=".activities.ProfileActivity" />
-        <activity android:name=".activities.SignupActivity" />
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.ConversationActivity" />
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.ContactActivity" />
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.ProfileActivity" />
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.SignupActivity" />
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="idn.project_whatsapp.whatsapp.activities.MainActivity">
         </activity>
     </application>
 

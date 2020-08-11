@@ -1,34 +1,98 @@
 {
   "project_info": {
-    "project_number": "1066989465123",
-    "firebase_url": "https://realtimechat-ad870.firebaseio.com",
-    "project_id": "realtimechat-ad870",
-    "storage_bucket": "realtimechat-ad870.appspot.com"
+    "project_number": "553949813405",
+    "firebase_url": "https://whatsapp-e0bc2.firebaseio.com",
+    "project_id": "whatsapp-e0bc2",
+    "storage_bucket": "whatsapp-e0bc2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1066989465123:android:cea19da8d9ddf033120b96",
+        "mobilesdk_app_id": "1:553949813405:android:2713eeaa4c22ac7b2e5274",
         "android_client_info": {
-          "package_name": "cmd.ushiramaru.weap"
+          "package_name": "idn.project_whatsapp.whatsapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1066989465123-73m4gq3v2t4e4qm3nua1pc3em7ii622d.apps.googleusercontent.com",
+          "client_id": "553949813405-ubod28in52p22kj6pegdgtr027494p1u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "b605856ca7ba33f95a27194664df8160a2715e07"
+          }
+        },
+        {
+          "client_id": "553949813405-u4lb02g6krjlfhot8kkpsvoi3hpjctcp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "66826ca2dbbd64a107024781c037588ef27360ca"
+          }
+        },
+        {
+          "client_id": "553949813405-e45t68rdtl0862q9p4jaidpj4q6t1u1j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "99d611a8553888150d733cd605239936c686736a"
+          }
+        },
+        {
+          "client_id": "553949813405-1ep8dm5k82s1tgcqe2oednfdpoog0n4i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "163ac399ef1c721b3b1e2ab3ea09f1c8072f12f2"
+          }
+        },
+        {
+          "client_id": "553949813405-hh2ks3hl4ljh3vumcf2ju9jqbfg14p87.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "347dbdf20c807291ab47b1532cccb004017775bd"
+          }
+        },
+        {
+          "client_id": "553949813405-es4ollouc7jtaevg2hmv0f797i713191.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "caf49711b9310d98e5777dcbd88124ee8b463b1d"
+          }
+        },
+        {
+          "client_id": "553949813405-7egtuul70osf6skj483vjrng1afmu02u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "1aa27f140ff22ca5ad8d9d3aff33cdf1c50300e9"
+          }
+        },
+        {
+          "client_id": "553949813405-8ekhb35kkdjnd7418o4o5mq7sruerp7a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "idn.project_whatsapp.whatsapp",
+            "certificate_hash": "1e554490c1ff2aa5321cf50e1e335b57ee41e2ad"
+          }
+        },
+        {
+          "client_id": "553949813405-o7u7k4e1r5q0c58i4hbnn8s6h3s9o1r9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCugldNLJtbQxHxnX8-wQnqgTyyihztXvc"
+          "current_key": "AIzaSyBrELkA92sYOGlJW4eW1p47Rt9-UqkEFvI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1066989465123-73m4gq3v2t4e4qm3nua1pc3em7ii622d.apps.googleusercontent.com",
+              "client_id": "553949813405-o7u7k4e1r5q0c58i4hbnn8s6h3s9o1r9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
