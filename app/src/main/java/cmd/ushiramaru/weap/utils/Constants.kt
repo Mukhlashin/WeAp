@@ -1,11 +1,11 @@
 package cmd.ushiramaru.weap.utils
 
 object Constants {
-    val DATA_USERS = "Users"                // data constants disini nantinya akan menjadi
-    val DATA_USER_EMAIL = "email"           // acuan untuk membuat data-data di Firebase
-    val DATA_USER_PHONE = "phone"           // acuan mendapatkan data-data dari Firebase
+    val DATA_USERS = "Users"
+    val DATA_USER_EMAIL = "email"
+    val DATA_USER_PHONE = "phone"
     val DATA_USER_NAME = "name"
-    val DATA_USER_IMAGE_URL = "imageUrl"    // acuan menghapus data-data di Firebase
+    val DATA_USER_IMAGE_URL = "imageUrl"
     val DATA_USER_STATUS = "status"
     val DATA_USER_STATUS_URL = "statusUrl"
     val DATA_USER_STATUS_TIME = "statusTime"

@@ -116,8 +116,7 @@ class ConversationActivity : AppCompatActivity() {
 
                 btn_send.setOnClickListener {
                     if (!edt_message.text.isNullOrEmpty()) {
-                        val message =
-                            Message(userId, edt_message.text.toString(), System.currentTimeMillis())
+                        val message = Message(userId, edt_message.text.toString(), System.currentTimeMillis())
                         firebaseDb.collection(DATA_CHATS)
                              .document(chatId!!)
                              .collection(DATA_CHAT_MESSAGE)

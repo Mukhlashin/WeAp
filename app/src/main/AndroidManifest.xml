@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="cmd.ushiramaru.weap">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -16,7 +17,11 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".activities.StatusActivity" />
+        <activity android:name=".activities.StatusActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".activities.ConversationActivity" />
         <activity android:name=".activities.ContactActivity" />
         <activity android:name=".activities.ProfileActivity" />
