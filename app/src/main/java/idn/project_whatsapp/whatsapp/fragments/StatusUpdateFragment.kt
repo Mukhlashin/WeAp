@@ -82,7 +82,7 @@ class StatusUpdateFragment : Fragment() {
         }
     }
 
-    fun storeImage(imageUri: Uri?) {
+    private fun storeImage(imageUri: Uri?) {
         if (imageUri != null && userId != null) {
             Toast.makeText(activity, "Uploading...", Toast.LENGTH_SHORT).show()
             progress_layout.visibility = View.VISIBLE

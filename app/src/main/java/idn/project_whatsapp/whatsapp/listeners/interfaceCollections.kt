@@ -1,5 +1,7 @@
 package idn.project_whatsapp.whatsapp.listeners
 
+import idn.project_whatsapp.whatsapp.utils.StatusListElement
+
 interface ProgressListener {
     fun onProgressUpdate(progress: Int)
 }
@@ -15,4 +17,8 @@ interface ContactsClickListener {
 
 interface FailureCallback {
     fun userError()
+}
+
+interface StatusItemClickListener {
+    fun onItemClicked(statusElement: StatusListElement)
 }
